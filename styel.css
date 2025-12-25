@@ -96,51 +96,217 @@ body {
     transform: scale(1.05);
 }
 
-/* قائمة التصنيفات */
-.nav {
+/* ========== قائمة التصنيفات المنسدلة - فتح من الأعلى ========== */
+.dropdown-toggle {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
     display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    z-index: 1002;
+    order: 2; /* لجعله يظهر بعد زر المفضلة */
+}
+
+.dropdown-toggle:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.3);
+}
+
+.dropdown-icon {
+    font-size: 0.8rem;
+    transition: var(--transition);
+}
+
+.dropdown-toggle.active .dropdown-icon {
+    transform: rotate(180deg);
+}
+
+/* القائمة المنسدلة - تفتح من الأعلى */
+.nav {
+    position: absolute;
+    top: calc(100% + 10px); /* مسافة أسفل الزر */
+    right: 0;
+    background: rgba(20, 20, 20, 0.98);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: 15px 0;
+    min-width: 280px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-20px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1001;
+    box-shadow: var(--shadow-lg);
+}
+
+.nav.open {
+    max-height: 600px;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    animation: dropdownOpen 0.4s ease-out;
+}
+
+@keyframes dropdownOpen {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .nav a {
+    display: flex;
+    align-items: center;
     text-decoration: none;
     color: var(--text-gray);
-    font-size: 1rem;
-    padding: 8px 15px;
-    border-radius: var(--border-radius);
-    transition: var(--transition);
+    font-size: 1.05rem;
+    padding: 12px 30px;
+    transition: all 0.3s ease;
+    background: transparent;
+    text-align: right;
     position: relative;
-    white-space: nowrap;
-    background: rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+    border-left: 3px solid transparent;
 }
 
 .nav a:hover {
     color: var(--text-light);
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
+    background: linear-gradient(90deg, rgba(229, 9, 20, 0.1) 0%, transparent 100%);
+    border-left-color: var(--primary-color);
+    padding-right: 35px;
 }
 
 .nav a.active {
     color: var(--primary-color);
     font-weight: 700;
-    background: rgba(229, 9, 20, 0.15);
-    border: 1px solid rgba(229, 9, 20, 0.3);
+    background: linear-gradient(90deg, rgba(229, 9, 20, 0.15) 0%, transparent 100%);
+    border-left-color: var(--primary-color);
 }
 
-.nav a.active::after {
+.nav a.active::before {
+    content: '▶';
+    position: absolute;
+    right: 10px;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+/* تأثير موجي عند hover */
+.nav a::after {
     content: '';
     position: absolute;
-    bottom: -5px;
-    right: 15px;
-    left: 15px;
-    height: 2px;
-    background-color: var(--primary-color);
-    border-radius: 2px;
+    top: 50%;
+    right: -100%;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: right 0.6s ease;
 }
 
-/* زر المفضلة */
+.nav a:hover::after {
+    right: 100%;
+}
+
+/* السهم العلوي للقائمة */
+.nav::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: 25px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid var(--border-color);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.nav.open::before {
+    opacity: 1;
+}
+
+.nav::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 25px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid rgba(20, 20, 20, 0.98);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.nav.open::after {
+    opacity: 1;
+}
+
+/* تقسيم القائمة إلى أعمدة على الشاشات الكبيرة */
+@media (min-width: 992px) {
+    .nav {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+        min-width: 450px;
+        padding: 20px;
+    }
+    
+    .nav a {
+        padding: 10px 20px;
+        margin: 2px 0;
+        border-radius: var(--border-radius);
+    }
+    
+    .nav::before,
+    .nav::after {
+        right: 50px;
+    }
+}
+
+/* تأثير دخول متدرج للروابط */
+.nav.open a {
+    animation: slideInRight 0.5s ease forwards;
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+@keyframes slideInRight {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* تأخير متدرج للروابط */
+.nav.open a:nth-child(1) { animation-delay: 0.1s; }
+.nav.open a:nth-child(2) { animation-delay: 0.15s; }
+.nav.open a:nth-child(3) { animation-delay: 0.2s; }
+.nav.open a:nth-child(4) { animation-delay: 0.25s; }
+.nav.open a:nth-child(5) { animation-delay: 0.3s; }
+.nav.open a:nth-child(6) { animation-delay: 0.35s; }
+.nav.open a:nth-child(7) { animation-delay: 0.4s; }
+.nav.open a:nth-child(8) { animation-delay: 0.45s; }
+.nav.open a:nth-child(9) { animation-delay: 0.5s; }
+.nav.open a:nth-child(10) { animation-delay: 0.55s; }
 .favorites-page-btn {
     text-decoration: none;
     color: var(--text-light);
@@ -993,4 +1159,304 @@ html {
         width: 0;
         left: 100%;
     }
+}/* ========== قائمة التصنيفات المنسدلة ========== */
+.dropdown-toggle {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    z-index: 1002;
+}
+
+.dropdown-toggle:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--primary-color);
+}
+
+.dropdown-icon {
+    font-size: 0.8rem;
+    transition: var(--transition);
+}
+
+.dropdown-toggle.active .dropdown-icon {
+    transform: rotate(180deg);
+}
+
+/* القائمة المنسدلة */
+.nav {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: 10px 0;
+    min-width: 250px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+    box-shadow: var(--shadow-lg);
+}
+
+.nav.open {
+    max-height: 500px;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    margin-top: 10px;
+}
+
+.nav a {
+    display: block;
+    text-decoration: none;
+    color: var(--text-gray);
+    font-size: 1rem;
+    padding: 12px 25px;
+    transition: var(--transition);
+    border-radius: 0;
+    background: transparent;
+    text-align: right;
+    border-right: 3px solid transparent;
+}
+
+.nav a:hover {
+    color: var(--text-light);
+    background: rgba(255, 255, 255, 0.05);
+    border-right-color: var(--primary-color);
+    transform: translateX(-5px);
+}
+
+.nav a.active {
+    color: var(--primary-color);
+    font-weight: 700;
+    background: rgba(229, 9, 20, 0.1);
+    border-right-color: var(--primary-color);
+}
+
+.nav a.active::after {
+    display: none;
+}
+
+/* تأثير الظل عند فتح القائمة */
+.nav.open::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: 20px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid var(--border-color);
+}
+
+.nav.open::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid rgba(0, 0, 0, 0.95);
+}
+@media (max-width: 992px) {
+    .site-header {
+        flex-direction: row;
+        gap: 10px;
+        padding: 10px var(--padding-base);
+    }
+    
+    .header-left {
+        width: auto;
+        justify-content: flex-start;
+        gap: 15px;
+    }
+    
+    .dropdown-toggle {
+        order: 0; /* إرجاع الترتيب الطبيعي */
+    }
+    
+    .nav {
+        position: fixed;
+        top: 70px;
+        right: 15px;
+        left: 15px;
+        max-height: 70vh;
+        overflow-y: auto;
+        border-radius: var(--border-radius-lg);
+        background: rgba(13, 13, 13, 0.98);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        z-index: 1001;
+    }
+    
+    .nav.open {
+        max-height: 70vh;
+        animation: mobileDropdownOpen 0.4s ease-out;
+    }
+    
+    @keyframes mobileDropdownOpen {
+        from {
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    
+    .nav::before,
+    .nav::after {
+        right: 30px;
+    }
+    
+    .dropdown-toggle {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav {
+        top: 65px;
+        right: 10px;
+        left: 10px;
+        padding: 10px 0;
+    }
+    
+    .nav a {
+        padding: 12px 25px;
+        font-size: 1rem;
+        margin: 3px 10px;
+        border-radius: var(--border-radius);
+    }
+    
+    .nav a:hover {
+        padding-right: 30px;
+    }
+    
+    .dropdown-toggle span {
+        display: inline;
+    }
+    
+    .dropdown-toggle {
+        padding: 8px 15px;
+        min-width: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .dropdown-toggle span {
+        display: none;
+    }
+    
+    .dropdown-toggle {
+        padding: 8px 10px;
+        min-width: 40px;
+        justify-content: center;
+    }
+    
+    .dropdown-toggle::before {
+        content: '☰';
+        font-size: 1.2rem;
+    }
+    
+    .dropdown-toggle span {
+        display: none;
+    }
+    
+    .dropdown-icon {
+        display: none;
+    }
+    
+    .nav {
+        right: 5px;
+        left: 5px;
+        max-height: 75vh;
+    }
+    
+    .nav.open {
+        max-height: 75vh;
+    }
+    
+    .nav a {
+        padding: 15px 20px;
+        font-size: 1rem;
+        margin: 2px 5px;
+    }
+    
+    .nav::before,
+    .nav::after {
+        right: 20px;
+    }
+}
+
+@media (max-width: 400px) {
+    .nav {
+        grid-template-columns: 1fr;
+    }
+    
+    .nav a {
+        padding: 15px 25px;
+    }
+}
+/* تأثير ضبابي للخلفية عندما تكون القائمة مفتوحة */
+.nav-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(3px);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.nav-backdrop.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* تحديث CSS للاستجابة */
+@media (max-width: 992px) {
+    .nav.open {
+        transform: translateY(0);
+    }
+    
+    /* إضافة خلفية ضبابية للهاتف */
+    .nav.open ~ .nav-backdrop {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* تأثيرات التركيز لتحسين الوصول */
+.dropdown-toggle:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.2);
+}
+
+.nav a:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: -2px;
+    background: rgba(229, 9, 20, 0.2);
 }

@@ -656,4 +656,83 @@ if ('IntersectionObserver' in window) {
             imageObserver.observe(img);
         });
     });
+}// التحكم في القائمة المنسدلة
+// التحكم في القائمة المنسدلة - نسخة محسنة
+const dropdownToggle = document.getElementById('dropdownToggle');
+const nav = document.querySelector('.nav');
+const navLinks = document.querySelectorAll('.nav a');
+
+if (dropdownToggle) {
+    // النقر على زر القائمة
+    dropdownToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        // تبديل حالة القائمة
+        nav.classList.toggle('open');
+        dropdownToggle.classList.toggle('active');
+        
+        // تأثير اهتزاز خفيف
+        if (nav.classList.contains('open')) {
+            dropdownToggle.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                dropdownToggle.style.transform = 'scale(1)';
+            }, 150);
+        }
+    });
 }
+
+// النقر على رابط في القائمة
+navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        // إغلاق القائمة بنعومة
+        nav.style.transition = 'all 0.3s ease';
+        nav.classList.remove('open');
+        dropdownToggle.classList.remove('active');
+        
+        // إزالة التأثير بعد الإغلاق
+        setTimeout(() => {
+            nav.style.transition = '';
+        }, 300);
+    });
+});
+
+// إغلاق القائمة عند النقر خارجها
+document.addEventListener('click', (e) => {
+    if (nav.classList.contains('open') && 
+        !nav.contains(e.target) && 
+        !dropdownToggle.contains(e.target)) {
+        
+        nav.style.transition = 'all 0.3s ease';
+        nav.classList.remove('open');
+        dropdownToggle.classList.remove('active');
+        
+        setTimeout(() => {
+            nav.style.transition = '';
+        }, 300);
+    }
+});
+
+// إغلاق القائمة عند التمرير
+let scrollTimer;
+window.addEventListener('scroll', () => {
+    if (nav.classList.contains('open')) {
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => {
+            nav.style.transition = 'all 0.2s ease';
+            nav.classList.remove('open');
+            dropdownToggle.classList.remove('active');
+            
+            setTimeout(() => {
+                nav.style.transition = '';
+            }, 200);
+        }, 100);
+    }
+});
+
+// إغلاق القائمة عند تغيير حجم النافذة
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 992 && nav.classList.contains('open')) {
+        nav.classList.remove('open');
+        dropdownToggle.classList.remove('active');
+    }
+});
