@@ -1434,7 +1434,43 @@ html {
     opacity: 1;
     visibility: visible;
 }
+/* ===========================================
+   معلومات الفيلم - تحسين للهاتف
+=========================================== */
+.movie-details {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: stretch;
+}
 
+.poster-container {
+    order: 1; /* جعل الصورة أول عنصر */
+    max-width: 300px;
+    margin: 0 auto 30px;
+    position: relative;
+}
+
+.poster {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    margin: 0 auto;
+    display: block;
+}
+
+.info-content {
+    order: 2; /* جعل المعلومات ثاني عنصر */
+    width: 100%;
+}
+
+/* إزالة التصميم القديم */
+.poster-container {
+    position: relative !important;
+    top: auto !important;
+}
 /* تحديث CSS للاستجابة */
 @media (max-width: 992px) {
     .nav.open {

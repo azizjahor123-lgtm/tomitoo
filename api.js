@@ -736,3 +736,4 @@ window.addEventListener('resize', () => {
         dropdownToggle.classList.remove('active');
     }
 });
+
